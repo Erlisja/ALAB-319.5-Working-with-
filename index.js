@@ -33,19 +33,19 @@ app.use((req,res,next)=>{
 
 
 // ============== ROUTES ==============
-app.get('/vegetables',(req,res)=>{
+app.get('/api/vegetables',(req,res)=>{
     res.json(vegetables);
 })
 
 // CREATE a new vegetable 
-app.post('/vegetables',(req,res)=>{
+app.post('/api/vegetables',(req,res)=>{
     const newVegetable = req.body   
     vegetables.push(newVegetable);
     res.json(vegetables); 
 })
 
 // READ a single vegetable
-app.get('/vegetables/:id',(req,res)=>{
+app.get('/api/vegetables/:id',(req,res)=>{
     const id = req.params.id;
     // check if the id exists
     if (id <=0 || id > vegetables.length){
@@ -57,12 +57,12 @@ app.get('/vegetables/:id',(req,res)=>{
 });
 
 // SHOW multiple vegetables
-app.get('/vegetables',(req,res)=>{
+app.get('/api/vegetables',(req,res)=>{
     res.json(vegetables);
 });
 
 // DELETE a vegetable
-app.delete('/vegetables/:id',(req,res)=>{
+app.delete('/api/vegetables/:id',(req,res)=>{
     const id = req.params.id;
     // check if the id exists
    if(id <=0 || id > vegetables.length){
@@ -74,6 +74,29 @@ app.delete('/vegetables/:id',(req,res)=>{
    }
 });
 
+// UPDATE a vegetable
+app.put('/api/vegetables/:id',(req,res)=>{
+    const id = req.params.id;
+    // check if the id exists
+    if(id <= 0 || id> vegetables.length){
+        res.status(404).send("The vegetable with the given id does not exist");
+    }else{
+        vegetables[id] = req.body;
+        res.json(vegetables);
+    }
+})
+
+// PATCH a vegetable
+app.patch('/api/vegetables/:id',(req,res)=>{
+    const id = req.params.id;
+    // check if the id exists
+    if(id <= 0 || id> vegetables.length){
+        res.status(404).send("The vegetable with the given id does not exist");
+    }else{
+        vegetables[id] = {...vegetables[id], ...req.body};
+        res.json(vegetables[id]);
+    }
+})
 
 // Custom 404 (not found) middleware
 // this middleware will catch any request that did not match a route
