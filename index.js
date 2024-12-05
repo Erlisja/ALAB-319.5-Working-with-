@@ -1,9 +1,18 @@
 // importing the express module
-const express = require('express'); 
+const express = require('express');
+// import the connection to the database
+const connectDB = require('./db/conn');
+
+
+//set port
+const dotenv = require('dotenv');
+dotenv.config();
+const PORT = process.env.PORT || 5050;
+
+
+
 // create your express app
 const app = express();
-
-const PORT = 3001;
 // import the body parser
 const bodyParser = require('body-parser');
 
