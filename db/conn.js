@@ -13,3 +13,17 @@ mongoose.connection.once('open', () => {
 } );
 
 module.exports = db;
+
+
+mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    connectTimeoutMS: 30000  // 30 seconds timeout
+})
+.then(() => {
+    console.log('Successfully connected to MongoDB!');
+})
+.catch((err) => {
+    console.error('Error connecting to MongoDB:', err);
+});
+

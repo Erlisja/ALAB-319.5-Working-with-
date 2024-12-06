@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
+
 const Vegetable = require('../model/vegetables');
+
 
 // ============== Temporary seed to populate the database ==============
 router.get('/seed',async (req,res)=>{
@@ -37,9 +39,11 @@ router.get('/seed',async (req,res)=>{
                 organic: false
             }
         ]);
-        res.status(200).redirect('/api/vegetables');
+        console.log('Seeded Vegetables:', Vegetable ); // Log inserted documents
+        res.status(200).send('success');
 
     }catch(error){
+        console.log(error);
        res.status(400).send(error);
     }
 
@@ -55,48 +59,42 @@ router.get('/',async(req,res)=>{
     }catch(error){
         res.status(400).send(error);
     }
+});
+
+
+
+
+
+
+// DELETE
+router.delete('/:id', async (req, res) => {
+    try {
+        const deletedVegetable= await Vegetable.findByIdAndDelete(req.params.id);
+        console.log(deletedVegetable);
+        res.status(200).redirect('/api/fruits');
+    } catch (err) {
+        res.status(400).send(err);
+    }
 })
 
 
+// CREATE
+router.post('/', async (req, res) => {
+    // you should check this when you first start, but then get rid of this console.log
+    // need to add logic to change the check or not checked to true or false
+    if (req.body.readyToEat === 'on') { // if checked, req.body.readyToEat is set to 'on'
+        req.body.readyToEat = true;
+    } else { // if not checked, req.body.readyToEat is undefined
+        req.body.readyToEat = false;
+    }
 
-
-// // DELETE a vegetable
-// app.delete('/api/vegetables/:id',(req,res)=>{
-//     const id = req.params.id;
-//     // check if the id exists
-//    if(id <=0 || id > vegetables.length){
-//     res.status(404).send("The vegetable with the given id does not exist");
-//    }else{
-//     const vegetable = vegetables.find(veg => veg.id === parseInt(id));
-//     vegetables.splice(vegetable,1);
-//     res.json(vegetables);
-//    }
-// });
-
-// // UPDATE a vegetable
-// router.put('/:id',(req,res)=>{
-//     const id = req.params.id;
-//     // check if the id exists
-//     if(id <= 0 || id> vegetables.length){
-//         res.status(404).send("The vegetable with the given id does not exist");
-//     }else{
-//         vegetables[id] = req.body;
-//         res.json(vegetables);
-//     }
-// })
-
-
-// // PATCH a vegetable
-// router.patch('/:id',(req,res)=>{
-//     const id = req.params.id;
-//     // check if the id exists
-//     if(id <= 0 || id> vegetables.length){
-//         res.status(404).send("The vegetable with the given id does not exist");
-//     }else{
-//         vegetables[id] = {...vegetables[id], ...req.body};
-//         res.json(vegetables[id]);
-//     }
-// })
+    try {
+        const createdVegetable = await Vegetable.create(req.body);
+        res.status(200).redirect('/api/vegetables');
+    } catch (err) {
+        res.status(400).send(err);
+    }
+})
 
 // SHOW
 // another version of READ is called a show route
